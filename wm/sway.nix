@@ -83,7 +83,7 @@ in {
       terminal = "alacritty";
       menu =
         "bemenu-run -i --tf ${tf-color} --nf ${nf-color} --hf ${hf-color} --hb ${hb-color} -n -m -1";
-      output."*".bg = "${wallpaper} fill";
+      # output."*".bg = "${wallpaper} fill";
       input = {
         "type:keyboard" = {
           xkb_layout = "us,de";
