@@ -4,6 +4,7 @@
   imports = [
     # Import a module from the Home Manager repository
     ./shell.nix
+    ./wm/sway.nix
   ];
 
   # Home Manager needs a bit of information about you and the paths it should
@@ -79,7 +80,7 @@
     LESS = "-R --use-color -Dd+r$Du+b";
     PATH = "$PATH:/home/nick/.local/bin:/home/nick/.nix-profile/bin";
   };
-
+  xdg.enable = true;
   # Enable the SSH agent service
   # programs.ssh = { startAgent = true; };
   programs.ssh = {

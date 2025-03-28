@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+{ config, pkgs, lib, stdenv, ... }:
 let
   mod = "Mod4";
   bg = " #40291a";
@@ -12,12 +12,13 @@ let
   nf-color = " #d62fd6";
   hf-color = " #ff00ff";
   hb-color = " #660066";
+  term = "alacritty";
+  wallpaper = /nix/store/2ivyjynd3zllhdr8yb19gfbk42nrxkk7-neon-city-sky.jpg;
 in {
   imports = [
     # Import a module from the Home Manager repository
     ./waybar.nix
   ];
-
   programs.wofi = {
     enable = true;
     settings = {
@@ -25,6 +26,7 @@ in {
       width = 250;
     };
   };
+
   wayland.windowManager.sway = {
     enable = true;
     xwayland = true;
@@ -81,9 +83,7 @@ in {
       terminal = "alacritty";
       menu =
         "bemenu-run -i --tf ${tf-color} --nf ${nf-color} --hf ${hf-color} --hb ${hb-color} -n -m -1";
-      output = {
-        "*" = { bg = "/home/nick/Pictures/Wallpapers/neon-city-sky.jpg fill"; };
-      };
+      output."*".bg = "${wallpaper} fill";
       input = {
         "type:keyboard" = {
           xkb_layout = "us,de";
@@ -91,7 +91,7 @@ in {
           xkb_options = "grp:toggle";
         };
       };
-      mode = {
+      modes = {
         resize = {
           Down = "resize grow height 10 px";
           Escape = "mode default";
@@ -105,13 +105,14 @@ in {
           l = "resize grow width 10 px";
         };
       };
+      bars = [{ command = "${pkgs.waybar}/bin/waybar"; }];
       keybindings = lib.attrsets.mergeAttrsList [
         (lib.attrsets.mergeAttrsList (map (num:
           let ws = toString num;
           in {
             "${mod}+${ws}" = "workspace ${ws}";
             "${mod}+Shift+${ws}" = "move container to workspace ${ws}";
-          }) [ 1 2 3 4 5 6 7 8 9 0 ]))
+          }) [ 0 1 2 3 4 5 6 7 8 9 ]))
 
         (lib.attrsets.concatMapAttrs (key: direction: {
           "${mod}+${key}" = "focus ${direction}";
@@ -128,7 +129,7 @@ in {
         })
 
         {
-          "${mod}+Return" = "exec ${pkgs.alacritty}/bin/alacritty";
+          "${mod}+Return" = "exec ${term}";
           "${mod}+space" = "focus mode_toggle";
           "${mod}+Shift+space" = "floating toggle";
 
@@ -149,10 +150,29 @@ in {
           "${mod}+Shift+c" = "reload";
           "${mod}+Shift+e" =
             "exec swaynag -t warning -m 'You pressed the exit shortcut. Do you really want to exit sway? This will end your Wayland session.' -B 'Yes, exit sway' 'swaymsg exit'";
+
+          "XF86AudioMute" = "exec pactl set-sink-mute @DEFAULT_SINK@ toggle";
+          "XF86AudioRaiseVolume" =
+            " exec pactl set-sink-volume @DEFAULT_SINK@ +1%";
+          "XF86AudioLowerVolume" =
+            " exec pactl set-sink-volume @DEFAULT_SINK@ -1%";
+          "XF86AudioMicMute" =
+            " exec pactl set-source-mute @DEFAULT_SOURCE@ toggle";
+          "XF86MonBrightnessDown" = "exec brightnessctl set 5%-";
+          "XF86MonBrightnessUp" = "exec brightnessctl set +5%";
+          "${mod}+XF86MonBrightnessDown" = " exec brightnessctl set 1";
+          "Print" = "exec bash /home/nick/.config/sway/grimshot copy area";
         }
       ];
       focus.followMouse = false;
-      startup = [{ command = "firefox"; }];
+      startup = [
+        { command = "export QT_QPA_PLATFORM=wayland"; }
+        { command = "export QT_QPA_PLATFORMTHEME=qt5ct"; }
+        { command = "mpd"; }
+        { command = "blueman-applet"; }
+        { command = "mako --default-timeout 10000"; }
+        { command = "udiskie --automount --tray --notify --appindicator"; }
+      ];
       workspaceAutoBackAndForth = true;
     };
     systemd.enable = true;
@@ -174,7 +194,7 @@ in {
     #swayr = { enable = true; };
     #swayimg = { enable = true; };
   };
-  security.pam.services.swaylock = { };
+  #security.pam.services.swaylock = { };
   services = {
     swayidle = {
       enable = true;
@@ -206,46 +226,3 @@ in {
   # home.pointerCursor.sway.enable = true;
   home.packages = with pkgs; [ grim slurp wl-clipboard ];
 }
-
-# home-manager/option/wayland.windowManager.sway.config
-# Sway configuration options
-# Score: 100%
-# home-manager/option/wayland.windowManager.sway.enable
-# Whether to enable sway wayland compositor
-# Score: 100%
-# home-manager/option/wayland.windowManager.sway.package
-# Sway package to use
-# Score: 100%
-# home-manager/option/wayland.windowManager.sway.systemd.enable
-# Whether to enable sway-session.target on sway startup
-# Score: 100%
-# home-manager/option/wayland.windowManager.sway.swaynag.enable
-# Whether to enable configuration of swaynag, a lightweight error bar for sway
-# Score: 100%
-# home-manager/option/wayland.windowManager.sway.wrapperFeatures
-# Attribute set of features to enable in the wrapper
-# Score: 100%
-# home-manager/option/wayland.windowManager.sway.extraConfigEarly
-# Like extraConfig, except lines are added to ~/.config/sway/config before all other configuration
-# Score: 100%
-# home-manager/option/wayland.windowManager.sway.swaynag.settings
-# Configuration written to $XDG_CONFIG_HOME/swaynag/config
-# Score: 100%
-# home-manager/option/wayland.windowManager.sway.systemd.variables
-# Environment variables imported into the systemd and D-Bus user environment
-# Score: 100%
-# home-manager/option/wayland.windowManager.sway.wrapperFeatures.gtk
-# Whether to make use of the wrapGAppsHook wrapper to execute sway with required environment variabl…
-# Score: 100%
-# home-manager/option/wayland.windowManager.sway.wrapperFeatures.base
-# Whether to make use of the base wrapper to execute extra session commands and prepend a dbus-run-s…
-# Score: 100%
-# home-manager/option/wayland.windowManager.sway.extraSessionCommands
-# Shell commands executed just before Sway is started
-# Score: 100%
-# home-manager/option/wayland.windowManager.sway.systemd.xdgAutostart
-# Whether to enable autostart of applications using systemd-xdg-autostart-generator(8)
-# Score: 100%
-# home-manager/option/wayland.windowManager.sway.systemd.extraCommands
-# Extra commands to run after D-Bus activation
-# Score: 100%

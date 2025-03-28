@@ -29,7 +29,6 @@ in {
   programs = {
     direnv.enable = true;
     direnv.enableZshIntegration = true;
-    direnv.enableFishIntegration = true;
     direnv.nix-direnv.enable = true;
     command-not-found.enable = true;
     fzf = {

@@ -2,112 +2,113 @@
   programs.waybar = {
     enable = true;
     systemd.enable = true;
-    config = {
+    settings = {
+      mainbar = {
+        layer = "top"; # Waybar at top layer
+        position = "top"; # Waybar at the top of your screen
+        height = 24; # Waybar height
+        # width = 1366; # Waybar width
+        # Choose the order of the modules
+        modules-center = [ "sway/window" ];
+        modules-left = [ "sway/workspaces" "sway/mode" ];
+        modules-right = [
+          "tray"
+          "pulseaudio"
+          "idle_inhibitor"
+          "network"
+          "cpu"
+          "memory"
+          "temperature"
+          "battery"
+          "clock"
+        ];
+        "sway/workspaces" = {
+          all-outputs = false;
+          disable-scroll = false;
+          format = "{icon}";
+          format-icons = {
+            "1: Terminal" = "";
+            "2: Messengers" = "";
+            "3: Browser" = "";
+            "4: Games" = "";
+            "5: LaTeX" = "";
+            "6: KeePass" = "";
+            "7: Video" = "";
+            "8: Code" = "";
+            "9: Tor" = "";
+            "10: VapourSynth" = "";
+            default = "";
+            focused = "";
+            urgent = "";
+          };
+        };
+        "sway/mode" = { format = ''<span style="italic">{}</span>''; };
 
-      layer = "top"; # Waybar at top layer
-      position = "top"; # Waybar at the top of your screen
-      height = 24; # Waybar height
-      width = 1366; # Waybar width
-      # Choose the order of the modules
-      modules-center = [ "sway/window" ];
-      modules-left = [ "sway/workspaces" "sway/mode" ];
-      modules-right = [
-        "tray"
-        "pulseaudio"
-        "idle_inhibitor"
-        "network"
-        "cpu"
-        "memory"
-        "temperature"
-        "battery"
-        "clock"
-      ];
-      "sway/workspaces" = {
-        all-outputs = false;
-        disable-scroll = false;
-        format = "{icon}";
-        format-icons = {
-          "10: VapourSynth" = "";
-          "1: Terminal" = "";
-          "2: Messengers" = "";
-          "3: Browser" = "";
-          "4: Games" = "";
-          "5: LaTeX" = "";
-          "6: KeePass" = "";
-          "7: Video" = "";
-          "8: Code" = "";
-          "9: Tor" = "";
-          default = "";
-          focused = "";
-          urgent = "";
+        tray = {
+          spacing = 10;
+          # icon-size = 21;
         };
-      };
-      "sway/mode" = { format = ''<span style="italic">{}</span>''; };
 
-      tray = {
-        spacing = 10;
-        # icon-size = 21;
-      };
-
-      idle_inhibitor = {
-        format = "{icon}";
-        format-icons = {
-          activated = "";
-          deactivated = "";
+        idle_inhibitor = {
+          format = "{icon}";
+          format-icons = {
+            activated = "";
+            deactivated = "";
+          };
+          timeout = 30.5;
         };
-        timeout = 30.5;
-      };
-      memory = { format = "{}% "; };
-      backlight = {
-        format = "{percent}% {icon}";
-        format-icons = [ "" ];
-      };
-      battery = {
-        bat = "BAT0";
-        format = "{capacity}% {icon}";
-        format-charging = "{capacity}% ";
-        format-icons = [ "" "" "" "" "" ];
-        # format-good = "", # An empty format will hide the module
-        # format-full = "",
-        states = {
-          critical = 23;
-          warning = 35;
-          # good = 95;
+        memory = { format = "{}% "; };
+        backlight = {
+          format = "{percent}% {icon}";
+          format-icons = [ "" ];
         };
-      };
-      clock = {
-        format = "{:%H:%M}";
-        format-alt = "{:%Y-%m-%d}";
-      };
-      cpu = { format = "{usage}% "; };
-      network = {
-        # interface = "wlp2s0";
-        format-disconnected = "Disconnected ⚠";
-        format-ethernet = "{ipaddr}/{cidr} ";
-        format-wifi = "({signalStrength}%) ";
-        on-click = "nm-connection-editor";
-      };
-      pulseaudio = {
-        format = "{volume}% {icon}";
-        format-bluetooth = "{volume}% {icon}";
-        format-icons = {
-          car = "";
-          default = [ "" "" ];
-          handsfree = "";
-          headphones = "";
-          headset = "";
-          phone = "";
-          portable = "";
+        battery = {
+          bat = "BAT0";
+          format = "{capacity}% {icon}";
+          format-charging = "{capacity}% ";
+          format-icons = [ "" "" "" "" "" ];
+          # format-good = "", # An empty format will hide the module
+          # format-full = "",
+          states = {
+            critical = 23;
+            warning = 35;
+            # good = 95;
+          };
         };
-        format-muted = "";
-        on-click = "pavucontrol";
-        scroll-step = 1;
-      };
-      temperature = {
-        critical-threshold = 80;
-        format = "{temperatureC}°C {icon}";
-        format-icons = [ " " " " " " ];
-        thermal-zone = 6;
+        clock = {
+          format = "{:%H:%M}";
+          format-alt = "{:%Y-%m-%d}";
+        };
+        cpu = { format = "{usage}% "; };
+        network = {
+          # interface = "wlp2s0";
+          format-disconnected = "Disconnected ⚠";
+          format-ethernet = "{ipaddr}/{cidr} ";
+          format-wifi = "({signalStrength}%) ";
+          on-click = "nm-connection-editor";
+        };
+        pulseaudio = {
+          format = "{volume}% {icon}";
+          format-bluetooth = "{volume}% {icon}";
+          format-icons = {
+            car = "";
+            default = [ "" "" ];
+            handsfree = "";
+            headphones = "";
+            headset = "";
+            phone = "";
+            portable = "";
+          };
+          format-muted = "";
+          on-click = "pavucontrol";
+          scroll-step = 1;
+        };
+        temperature = {
+          critical-threshold = 80;
+          format = "{temperatureC}°C {icon}";
+          format-icons = [ " " " " " " ];
+          thermal-zone = 6;
+        };
       };
     };
     style = ''
